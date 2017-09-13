@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from gmsdk.api import StrategyBase
-from gmsdk.util import bar_to_dict
+from gmsdk.util import bar_to_dict, indicator_to_dict
 
 from MAstrategy import configs
 
@@ -28,7 +28,7 @@ class MyStrategy(StrategyBase):
         self.oc = not self.oc
 
     def on_backtest_finish(self, indicator):
-        print('backtest finished', str(indicator))
+        print('backtest finished', indicator_to_dict(indicator))
 
 
 
