@@ -4,12 +4,14 @@ from gmsdk.api import StrategyBase
 from gmsdk.util import bar_to_dict, indicator_to_dict
 
 from MAstrategy import configs
+from MAstrategy import SYGNAL_TYPE
+from MAstrategy.algorithm import calc
 
 
 class MyStrategy(StrategyBase):
     def __init__(self, *args, **kwargs):
         super(MyStrategy, self).__init__(*args, **kwargs)
-        self.oc = True
+        self.inhand = 0
     
     def on_login(self):
         print('logged in')
@@ -20,16 +22,25 @@ class MyStrategy(StrategyBase):
     
     def on_bar(self, bar):
         print('%s: %s, %s'%(str(bar.sec_id ), str(bar.strendtime), str(bar.close)))
-        print(bar_to_dict(bar))
-        if self.oc:
+        # print(bar_to_dict(bar))
+
+        sig = calc(self, configs, bar)
+
+        if sig == SYGNAL_TYPE.BUY and self.inhand <=0:
             self.open_long(bar.exchange, bar.sec_id, 0, 100)
-        else:
-            self.close_long(bar.exchange, bar.sec_id, 0, 100)
-        self.oc = not self.oc
+            if self.inhand < 0:
+                self.close_short(bar.exchange, bar.sec_id, 0, 100)
+            self.inhand = 1
+
+        if sig == SYGNAL_TYPE.SELL and self.inhand >= 0:
+            self.open_short(bar.exchange, bar.sec_id, 0, 100)
+            if self.inhand > 0:
+                self.close_long(bar.exchange, bar.sec_id, 0, 100)
+            self.inhand = -1
+
 
     def on_backtest_finish(self, indicator):
         print('backtest finished', indicator_to_dict(indicator))
-
 
 
 if __name__ == '__main__':
