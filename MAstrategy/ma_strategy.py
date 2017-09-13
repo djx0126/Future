@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 from gmsdk.api import StrategyBase
 from gmsdk.util import bar_to_dict
-import configs
+
+from MAstrategy import configs
+
 
 class MyStrategy(StrategyBase):
     def __init__(self, *args, **kwargs):
