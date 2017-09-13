@@ -1,0 +1,5 @@
+STOP_PROFIT = 2
+BUY = 1
+NULL = 0
+SELL = -1
+STOP_LOSS = -2
